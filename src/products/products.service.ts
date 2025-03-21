@@ -22,7 +22,7 @@ export class ProductsService {
   }
 
   async update(id: string, data: UpdateProductDto) {
-    await this.findOne(id); // Ensure it exists
+    await this.findOne(id);
     return this.prisma.product.update({ where: { id }, data });
   }
 
