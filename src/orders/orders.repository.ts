@@ -1,7 +1,7 @@
 // src/orders/orders.repository.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, Product } from '@prisma/client';
 
 @Injectable()
 export class OrdersRepository {
@@ -59,6 +59,13 @@ export class OrdersRepository {
         user: true,
         products: { include: { product: true } },
       },
+    });
+  }
+
+  async updateStock(productId: string, quantityChange: number): Promise<Product> {
+    return this.prisma.product.update({
+      where: { id: productId },
+      data: { stockQuantity: { increment: quantityChange } },
     });
   }
 

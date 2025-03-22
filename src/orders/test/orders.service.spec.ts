@@ -17,6 +17,7 @@ describe('OrdersService', () => {
       createOrder: jest.fn(),
       findAllOrders: jest.fn(),
       findOrderById: jest.fn(),
+      updateStock: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -30,7 +31,7 @@ describe('OrdersService', () => {
     jest.clearAllMocks();
   });
 
-  it('should conclude an order', async () => {
+  it('should conclude an order and update product stock', async () => {
     const orderId = 'o1';
 
     repositoryMock.findOrderById.mockResolvedValue({
@@ -39,6 +40,7 @@ describe('OrdersService', () => {
       total: 100,
       createdAt: new Date(),
       userId: 'user123',
+      products: [{ productId: 'p1', quantity: 2 }],
     });
 
     repositoryMock.updateStatus.mockResolvedValue({
@@ -49,6 +51,8 @@ describe('OrdersService', () => {
       userId: 'user123',
     });
 
+    repositoryMock.updateStock.mockResolvedValue({ id: 'p1', stockQuantity: 8 });
+
     const result = await service.markAsCompleted(orderId);
 
     if ('status' in result) {
@@ -58,8 +62,8 @@ describe('OrdersService', () => {
     }
 
     expect(repositoryMock.updateStatus).toHaveBeenCalledWith(orderId, OrderStatus.COMPLETED);
+    expect(repositoryMock.updateStock).toHaveBeenCalledWith('p1', -2);
   });
-
 
 
   it('should create an order successfully', async () => {

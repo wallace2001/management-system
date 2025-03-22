@@ -65,8 +65,13 @@ export class OrdersService {
       return { message: 'Order is already completed' };
     }
 
+    for (const item of order.products) {
+      await this.repo.updateStock(item.productId, -item.quantity);
+    }
+
     return this.repo.updateStatus(id, OrderStatus.COMPLETED);
   }
+
 
   async findAll() {
     return this.repo.findAllOrders();
