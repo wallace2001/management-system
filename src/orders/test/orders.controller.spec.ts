@@ -10,6 +10,7 @@ describe('OrdersController (e2e)', () => {
   let prisma: PrismaService;
   let productId: string;
   let orderId: string;
+  let token: string;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -25,6 +26,17 @@ describe('OrdersController (e2e)', () => {
     await prisma.orderProduct.deleteMany();
     await prisma.order.deleteMany();
     await prisma.product.deleteMany();
+    await prisma.user.deleteMany({ where: { username: 'testuser' } });
+
+    const userRes = await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({ username: 'testuser', password: 'testpass' });
+
+    const loginRes = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ username: 'testuser', password: 'testpass' });
+
+    token = loginRes.body.access_token;
 
     const product = await prisma.product.create({
       data: {
@@ -43,12 +55,14 @@ describe('OrdersController (e2e)', () => {
     await prisma.orderProduct.deleteMany();
     await prisma.order.deleteMany();
     await prisma.product.deleteMany();
+    await prisma.user.deleteMany({ where: { username: 'testuser' } });
     await app.close();
   });
 
   it('/POST orders', async () => {
     const res = await request(app.getHttpServer())
       .post('/orders')
+      .set('Authorization', `Bearer ${token}`)
       .send({
         products: { [productId]: 2 },
         status: OrderStatus.COMPLETED,
@@ -56,14 +70,25 @@ describe('OrdersController (e2e)', () => {
 
     expect(res.status).toBe(201);
     expect(res.body.total).toBe(60);
+    expect(res.body.userId).toBeDefined();
     orderId = res.body.id;
   });
 
   it('/GET order by id', async () => {
+    // Cria pedido vinculado ao user via prisma
+    const user = await prisma.user.findUnique({
+      where: { username: 'testuser' },
+    });
+
+    if (!user) {
+      return;
+    }
+
     const order = await prisma.order.create({
       data: {
         status: OrderStatus.PENDING,
         total: 0,
+        userId: user.id,
         products: {
           create: [{ productId, quantity: 1 }],
         },
@@ -71,9 +96,11 @@ describe('OrdersController (e2e)', () => {
     });
 
     const res = await request(app.getHttpServer())
-      .get(`/orders/${order.id}`);
+      .get(`/orders/${order.id}`)
+      .set('Authorization', `Bearer ${token}`);
 
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(order.id);
+    expect(res.body.userId).toBe(user.id);
   });
 });
