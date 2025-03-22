@@ -150,7 +150,7 @@ http://localhost:3000/api
 - Confirme se o `RUN yarn build` está gerando `dist/`
 - `CMD` no Dockerfile deve ser:
 ```Dockerfile
-CMD ["node", "dist/main"]
+CMD ["node", "dist/src/main"]
 ```
 
 ### "OrderStatus/Product/User not found from @prisma/client"
