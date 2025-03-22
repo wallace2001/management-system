@@ -12,6 +12,7 @@ import { UsersService } from 'src/users/users.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RequestWithUser } from './types/request-with-user';
+import { RegisterDto } from './dto/register.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -28,7 +29,7 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() dto: LoginDto) {
+  async register(@Body() dto: RegisterDto) {
     const user = await this.usersService.createUser(dto.username, dto.password, dto.role);
     return { id: user.id, username: user.username, role: user.role };
   }
