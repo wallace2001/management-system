@@ -1,5 +1,17 @@
 version: '3.8'
 services:
+  api:
+    build: .
+    container_name: nestjs-app
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/management
+      - JWT_SECRET=my-secret
+    depends_on:
+      - db
+    networks:
+      - app
   db:
     image: postgres:latest
     restart: always
