@@ -12,7 +12,7 @@ export class LoginDto {
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: ['ADMIN', 'USER'] })
   @IsString()
   @IsNotEmpty()
   role: 'ADMIN' | 'USER' = 'USER';
