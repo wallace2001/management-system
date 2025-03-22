@@ -5,7 +5,7 @@ import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OrderStatus } from '@prisma/client';
 
-describe('OrdersController (e2e)', () => {
+describe('OrdersController', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let productId: string;

@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-describe('AuthController (e2e)', () => {
+describe('AuthController', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let token: string;

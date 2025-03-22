@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-describe('ProductsController (e2e)', () => {
+describe('ProductsController', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let productId: string;
@@ -54,7 +54,7 @@ describe('ProductsController (e2e)', () => {
 
     const product = await prisma.product.create({
       data: {
-        name: 'E2E Mouse',
+        name: 'Mouse',
         category: 'Tech',
         description: 'Mouse testing',
         price: 25,
