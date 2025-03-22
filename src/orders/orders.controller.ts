@@ -20,7 +20,7 @@ export class OrdersController {
   @Post()
   @ApiOperation({ summary: 'Create a new order' })
   create(@Body() dto: CreateOrderDto, @Req() req: RequestWithUser) {
-    const userId = req.user['userId']; // 👈 pega do token JWT
+    const userId = req.user['userId'];
     return this.ordersService.create(dto, userId);
   }
 

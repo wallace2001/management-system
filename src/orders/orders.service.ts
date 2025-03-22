@@ -25,7 +25,6 @@ export class OrdersService {
       const requestedQty = dto.products[product.id];
 
       if (
-        dto.status === OrderStatus.COMPLETED &&
         product.stockQuantity < requestedQty
       ) {
         throw new BadRequestException(
