@@ -1,8 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
+import { LoggerMiddleware } from './common/middleware/logger/logger.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.use(new LoggerMiddleware().use);
+
+  const config = new DocumentBuilder()
+    .setTitle('Order & Product API')
+    .setDescription('API for managing products and orders')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
+
+  await app.listen(3000);
 }
 bootstrap();
