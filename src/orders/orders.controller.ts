@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Param, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, Req, UseGuards, Patch, HttpCode, HttpStatus } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -7,6 +7,7 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { Request } from 'express';
 import { RequestWithUser } from 'src/auth/types/request-with-user';
+import { OrderStatus } from '@prisma/client';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -33,5 +34,12 @@ export class OrdersController {
   @ApiOperation({ summary: 'Get order by ID' })
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);
+  }
+
+  @Patch(':id/complete')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Mark an order as completed' })
+  async completeOrder(@Param('id') id: string) {
+    return this.ordersService.markAsCompleted(id);
   }
 }

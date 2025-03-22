@@ -13,6 +13,7 @@ describe('OrdersService', () => {
     repositoryMock = {
       findProductsByIds: jest.fn(),
       updateProductStock: jest.fn(),
+      updateStatus: jest.fn(),
       createOrder: jest.fn(),
       findAllOrders: jest.fn(),
       findOrderById: jest.fn(),
@@ -28,6 +29,38 @@ describe('OrdersService', () => {
     service = module.get<OrdersService>(OrdersService);
     jest.clearAllMocks();
   });
+
+  it('should conclude an order', async () => {
+    const orderId = 'o1';
+
+    repositoryMock.findOrderById.mockResolvedValue({
+      id: orderId,
+      status: OrderStatus.PENDING,
+      total: 100,
+      createdAt: new Date(),
+      userId: 'user123',
+    });
+
+    repositoryMock.updateStatus.mockResolvedValue({
+      id: orderId,
+      status: OrderStatus.COMPLETED,
+      total: 100,
+      createdAt: new Date(),
+      userId: 'user123',
+    });
+
+    const result = await service.markAsCompleted(orderId);
+
+    if ('status' in result) {
+      expect(result.status).toBe(OrderStatus.COMPLETED);
+    } else {
+      throw new Error('Unexpected return type');
+    }
+
+    expect(repositoryMock.updateStatus).toHaveBeenCalledWith(orderId, OrderStatus.COMPLETED);
+  });
+
+
 
   it('should create an order successfully', async () => {
     const dto: CreateOrderDto = {

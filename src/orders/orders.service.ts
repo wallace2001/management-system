@@ -54,6 +54,20 @@ export class OrdersService {
     });
   }
 
+  async markAsCompleted(id: string) {
+    const order = await this.repo.findOrderById(id);
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    if (order.status === OrderStatus.COMPLETED) {
+      return { message: 'Order is already completed' };
+    }
+
+    return this.repo.updateStatus(id, OrderStatus.COMPLETED);
+  }
+
   async findAll() {
     return this.repo.findAllOrders();
   }

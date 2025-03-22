@@ -61,4 +61,11 @@ export class OrdersRepository {
       },
     });
   }
+
+  updateStatus(id: string, status: OrderStatus) {
+    return this.prisma.order.update({
+      where: { id },
+      data: { status },
+    });
+  }
 }
