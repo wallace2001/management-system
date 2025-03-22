@@ -20,7 +20,9 @@ describe('AuthController (e2e)', () => {
 
     prisma = app.get(PrismaService);
 
-    // limpa usuários duplicados (opcional)
+    await prisma.orderProduct.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.product.deleteMany();
     await prisma.user.deleteMany({ where: { username: 'testuser' } });
 
     await request(app.getHttpServer())
@@ -35,6 +37,9 @@ describe('AuthController (e2e)', () => {
   });
 
   afterAll(async () => {
+    await prisma.orderProduct.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.product.deleteMany();
     await prisma.user.deleteMany({ where: { username: 'testuser' } });
     await app.close();
   });

@@ -28,7 +28,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  @Roles('ADMIN') // ✅ apenas admin pode criar
+  @Roles('ADMIN')
   @ApiOperation({ summary: 'Create a product' })
   create(@Body() dto: CreateProductDto) {
     return this.productsService.create(dto);
