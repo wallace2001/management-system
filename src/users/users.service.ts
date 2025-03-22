@@ -11,17 +11,32 @@ import { UsersRepository } from './users.repository';
 export class UsersService {
   constructor(private readonly repo: UsersRepository) {}
 
-  async createUser(username: string, password: string, role: 'ADMIN' | 'USER' = 'USER') {
+  async createUser(
+    username: string,
+    password: string,
+    role: 'ADMIN' | 'USER' = 'USER',
+  ) {
     const hashed = await bcrypt.hash(password, 10);
 
     try {
       return await this.repo.create({ username, password: hashed, role });
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
         throw new ConflictException('Username already exists');
       }
       throw error;
     }
+  }
+
+  async deleteUser(id: string) {
+    return this.repo.delete(id);
+  }
+
+  async updateUser(id: string, data: { username?: string; role?: 'ADMIN' | 'USER' }) {
+    return this.repo.update(id, data);
   }
 
   async findByUsername(username: string) {
@@ -32,5 +47,9 @@ export class UsersService {
     const user = await this.repo.findById(id);
     if (!user) throw new NotFoundException('User not found');
     return user;
+  }
+
+  async findAll() {
+    return await this.repo.findAll();
   }
 }

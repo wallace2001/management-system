@@ -1,13 +1,23 @@
-import { Controller, Post, Get, Param, Body, Req, UseGuards, Patch, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Param,
+  Body,
+  Req,
+  UseGuards,
+  Patch,
+  HttpCode,
+  HttpStatus,
+  Delete,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
-import { Request } from 'express';
 import { RequestWithUser } from 'src/auth/types/request-with-user';
-import { OrderStatus } from '@prisma/client';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -42,4 +52,11 @@ export class OrdersController {
   async completeOrder(@Param('id') id: string) {
     return this.ordersService.markAsCompleted(id);
   }
+
+  @Delete(':id')
+@HttpCode(HttpStatus.NO_CONTENT)
+@ApiOperation({ summary: 'Delete an order by ID' })
+async delete(@Param('id') id: string) {
+  return this.ordersService.delete(id);
+}
 }

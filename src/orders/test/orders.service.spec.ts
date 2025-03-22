@@ -18,6 +18,7 @@ describe('OrdersService', () => {
       findAllOrders: jest.fn(),
       findOrderById: jest.fn(),
       updateStock: jest.fn(),
+      delete: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -51,7 +52,10 @@ describe('OrdersService', () => {
       userId: 'user123',
     });
 
-    repositoryMock.updateStock.mockResolvedValue({ id: 'p1', stockQuantity: 8 });
+    repositoryMock.updateStock.mockResolvedValue({
+      id: 'p1',
+      stockQuantity: 8,
+    });
 
     const result = await service.markAsCompleted(orderId);
 
@@ -61,14 +65,16 @@ describe('OrdersService', () => {
       throw new Error('Unexpected return type');
     }
 
-    expect(repositoryMock.updateStatus).toHaveBeenCalledWith(orderId, OrderStatus.COMPLETED);
+    expect(repositoryMock.updateStatus).toHaveBeenCalledWith(
+      orderId,
+      OrderStatus.COMPLETED,
+    );
     expect(repositoryMock.updateStock).toHaveBeenCalledWith('p1', -2);
   });
 
-
   it('should create an order successfully', async () => {
     const dto: CreateOrderDto = {
-      products: { 'p1': 2 },
+      products: { p1: 2 },
       status: OrderStatus.PENDING,
     };
     const userId = 'u1';
@@ -98,7 +104,7 @@ describe('OrdersService', () => {
 
   it('should throw if product stock is insufficient (COMPLETED)', async () => {
     const dto: CreateOrderDto = {
-      products: { 'p1': 5 },
+      products: { p1: 5 },
       status: OrderStatus.COMPLETED,
     };
 
@@ -106,7 +112,9 @@ describe('OrdersService', () => {
       { id: 'p1', name: 'Keyboard', price: 100, stockQuantity: 2 },
     ]);
 
-    await expect(service.create(dto, 'u1')).rejects.toThrow(BadRequestException);
+    await expect(service.create(dto, 'u1')).rejects.toThrow(
+      BadRequestException,
+    );
   });
 
   it('should throw if order not found on findOne', async () => {

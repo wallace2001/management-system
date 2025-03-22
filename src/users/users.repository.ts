@@ -7,7 +7,11 @@ import { User } from '@prisma/client';
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: { username: string; password: string; role: 'ADMIN' | 'USER' }): Promise<User> {
+  async create(data: {
+    username: string;
+    password: string;
+    role: 'ADMIN' | 'USER';
+  }): Promise<User> {
     return this.prisma.user.create({ data });
   }
 
@@ -24,6 +28,21 @@ export class UsersRepository {
         role: true,
         createdAt: true,
       },
+    });
+  }
+
+  async findAll(): Promise<Partial<User[]> | null> {
+    return this.prisma.user.findMany();
+  }
+
+  async delete(id: string): Promise<User> {
+    return this.prisma.user.delete({ where: { id } });
+  }
+
+  async update(id: string, data: Partial<Pick<User, 'username' | 'role'>>): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data,
     });
   }
 }

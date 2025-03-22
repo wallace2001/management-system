@@ -24,9 +24,7 @@ export class OrdersService {
     for (const product of products) {
       const requestedQty = dto.products[product.id];
 
-      if (
-        product.stockQuantity < requestedQty
-      ) {
+      if (product.stockQuantity < requestedQty) {
         throw new BadRequestException(
           `Product ${product.name} does not have enough stock.`,
         );
@@ -71,9 +69,18 @@ export class OrdersService {
     return this.repo.updateStatus(id, OrderStatus.COMPLETED);
   }
 
-
   async findAll() {
     return this.repo.findAllOrders();
+  }
+
+  async delete(id: string) {
+    const order = await this.repo.findOrderById(id);
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    return this.repo.delete(id);
   }
 
   async findOne(id: string) {

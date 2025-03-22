@@ -36,8 +36,8 @@ describe('ProductsController', () => {
     await prisma.user.deleteMany({ where: { username } });
 
     await request(app.getHttpServer())
-    .post('/auth/register')
-    .send({ username, password: 'testpass' });
+      .post('/auth/register')
+      .send({ username, password: 'testpass' });
 
     await prisma.user.update({
       where: { username },

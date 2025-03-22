@@ -12,7 +12,9 @@ export class LoggerMiddleware implements NestMiddleware {
       const url = req.originalUrl;
       const status = res.statusCode;
 
-      const user = req.user as { userId: string; username: string; role: string } | undefined;
+      const user = req.user as
+        | { userId: string; username: string; role: string }
+        | undefined;
       const userInfo = user ? `[user: ${user.username} - ${user.userId}]` : '';
 
       console.log(`[${method}] ${url} -> ${status} +${duration}ms ${userInfo}`);

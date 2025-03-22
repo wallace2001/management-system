@@ -62,7 +62,20 @@ export class OrdersRepository {
     });
   }
 
-  async updateStock(productId: string, quantityChange: number): Promise<Product> {
+  async delete(id: string) {
+    await this.prisma.orderProduct.deleteMany({
+      where: { orderId: id },
+    });
+
+    return this.prisma.order.delete({
+      where: { id },
+    });
+  }
+
+  async updateStock(
+    productId: string,
+    quantityChange: number,
+  ): Promise<Product> {
     return this.prisma.product.update({
       where: { id: productId },
       data: { stockQuantity: { increment: quantityChange } },

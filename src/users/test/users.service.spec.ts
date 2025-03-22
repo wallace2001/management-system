@@ -30,13 +30,15 @@ describe('UsersService', () => {
   });
 
   it('should create a user with hashed password', async () => {
-    usersRepository.create.mockImplementation(async ({ username, password, role }) => ({
-      id: 'user-id',
-      username,
-      password,
-      role,
-      createdAt: new Date(),
-    }));
+    usersRepository.create.mockImplementation(
+      async ({ username, password, role }) => ({
+        id: 'user-id',
+        username,
+        password,
+        role,
+        createdAt: new Date(),
+      }),
+    );
 
     const user = await service.createUser('unittest', 'password123');
 
@@ -83,6 +85,8 @@ describe('UsersService', () => {
   it('should throw NotFoundException if user id not found', async () => {
     usersRepository.findById.mockResolvedValue(null);
 
-    await expect(service.findById('invalid-id')).rejects.toThrow(NotFoundException);
+    await expect(service.findById('invalid-id')).rejects.toThrow(
+      NotFoundException,
+    );
   });
 });

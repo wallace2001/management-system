@@ -9,7 +9,14 @@ import { UsersModule } from './users/users.module';
 import { LoggerMiddleware } from './common/middleware/logger/logger.middleware';
 
 @Module({
-  imports: [PrismaModule, ProductsModule, OrdersModule, AuthModule, UsersModule, AuthModule],
+  imports: [
+    PrismaModule,
+    ProductsModule,
+    OrdersModule,
+    AuthModule,
+    UsersModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

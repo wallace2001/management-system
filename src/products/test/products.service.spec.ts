@@ -17,7 +17,6 @@ describe('ProductsService', () => {
       delete: jest.fn(),
     };
 
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProductsService,
@@ -47,7 +46,9 @@ describe('ProductsService', () => {
   it('should throw if product not found', async () => {
     repositoryMock.findById.mockResolvedValue(null);
 
-    await expect(service.findOne('nonexistent-id')).rejects.toThrow(NotFoundException);
+    await expect(service.findOne('nonexistent-id')).rejects.toThrow(
+      NotFoundException,
+    );
     expect(repositoryMock.findById).toHaveBeenCalledWith('nonexistent-id');
   });
 

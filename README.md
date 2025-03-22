@@ -19,12 +19,14 @@ Sistema backend desenvolvido com NestJS e Prisma para gerenciamento de usuários
 ## 📚 Instruções de uso
 
 ### 1. Clone o repositório
+
 ```bash
 git clone https://github.com/seu-usuario/seu-repositorio.git
 cd seu-repositorio
 ```
 
 ### 2. Configure o `.env`
+
 Crie um arquivo `.env` com:
 
 ```env
@@ -44,6 +46,7 @@ docker-compose up --build
   - Login: admin@admin.com / admin
 
 ### 4. Banco de dados
+
 ```bash
 yarn prisma migrate dev
 ```
@@ -81,6 +84,7 @@ yarn test
 ## 🎓 Criando usuário para testes
 
 ### Criar conta USER (padrão):
+
 ```http
 POST /auth/register
 {
@@ -90,6 +94,7 @@ POST /auth/register
 ```
 
 ### Criar conta ADMIN:
+
 ```http
 POST /auth/register
 {
@@ -100,6 +105,7 @@ POST /auth/register
 ```
 
 ### Obter token:
+
 ```http
 POST /auth/login
 {
@@ -109,6 +115,7 @@ POST /auth/login
 ```
 
 Resposta:
+
 ```json
 {
   "access_token": "..."
@@ -119,11 +126,11 @@ Resposta:
 
 ## 📊 Rotas protegidas
 
-| Rota | Metodo | Auth | Roles |
-|------|--------|------|-------|
-| /products | GET | ✅ | ADMIN, USER |
-| /products/:id | DELETE | ✅ | ADMIN |
-| /orders | POST | ✅ | USER |
+| Rota          | Metodo | Auth | Roles       |
+| ------------- | ------ | ---- | ----------- |
+| /products     | GET    | ✅   | ADMIN, USER |
+| /products/:id | DELETE | ✅   | ADMIN       |
+| /orders       | POST   | ✅   | USER        |
 
 Use o Swagger para testar:
 
@@ -146,15 +153,20 @@ http://localhost:3000/api
 ## 🤦‍♂️ Problemas comuns
 
 ### "Cannot find module 'dist/main'"
+
 > Solução:
+
 - Confirme se o `RUN yarn build` está gerando `dist/`
 - `CMD` no Dockerfile deve ser:
+
 ```Dockerfile
 CMD ["node", "dist/src/main"]
 ```
 
 ### "OrderStatus/Product/User not found from @prisma/client"
+
 > Solução:
+
 - Rode: `yarn prisma generate`
 - Certifique-se que está usando a versão gerada após `migrate`
 
@@ -164,4 +176,3 @@ CMD ["node", "dist/src/main"]
 
 Sistema funcional e preparado para testes, expansão e deploy.
 Para dúvidas ou melhorias, sinta-se livre para colaborar ✨
-
